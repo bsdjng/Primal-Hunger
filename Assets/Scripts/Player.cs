@@ -82,6 +82,7 @@ public class Player : MonoBehaviour
             mybullet.GetComponent<Rigidbody2D>().AddForce(transform.right * slingForce + transform.up * (slingForce / 4));
         }
         Destroy(mybullet, 3f);
+        bulletsLeft--;
 
         StartCoroutine(ResetcanShoot());
     }
@@ -115,7 +116,7 @@ public class Player : MonoBehaviour
                 break;
 
             case "Exit":
-                SceneManager.LoadScene("Level2");
+                LoadNextScene();
                 break;
 
             case "Slingshot":
@@ -148,5 +149,20 @@ public class Player : MonoBehaviour
         }
         hasSlingShot = false;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+    }
+
+    public void LoadNextScene()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 }
