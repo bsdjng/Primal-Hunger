@@ -8,22 +8,22 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    public Rigidbody2D rb => GetComponent<Rigidbody2D>();
+    private Rigidbody2D rb => GetComponent<Rigidbody2D>();
     public Transform respawnPoint;
-    public int lives;
-    public float hunger;
+    private int lives;
+    private float hunger;
     public float maxHunger = 100;
     public float hungerMarkiplier = 1.5f;
-    public bool hasSlingShot;
-    public bool canShoot;
+    private bool hasSlingShot;
+    private bool canShoot;
     public int bulletsLeft;
-    public float slingForce = 10;
-    public float slingCooldown = 1;
+    private float slingForce = 10;
+    private float slingCooldown = 1;
     public GameObject bullet;
     public TMP_Text hungerText;
     public TMP_Text livesText;
-    public bool hungerSoundPlayed;
-    public AudioSource source => GetComponent<AudioSource>();
+    private bool hungerSoundPlayed;
+    private AudioSource source => GetComponent<AudioSource>();
     public AudioClip hungerSound;
     public AudioClip eatingSound;
     public Animator anim;
@@ -33,7 +33,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         anim.SetFloat("speed", Mathf.Abs(rb.velocity.x));
-        anim.SetFloat("speedMarkiplier", rb.velocity.x / 5);
+        // anim.SetFloat("speedMarkiplier", rb.velocity.x / 5);
 
         if (hunger > maxHunger)
         {
@@ -41,7 +41,7 @@ public class Player : MonoBehaviour
         }
         else if (hunger <= 0)
         {
-            die();
+            Die();
         }
         hunger -= Time.deltaTime * hungerMarkiplier;
         hungerText.text = Mathf.RoundToInt(hunger).ToString() + "%";
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
 
         if (lives <= 0)
         {
-            die();
+            Die();
         }
 
         if (Input.GetMouseButtonDown(0) && hasSlingShot && canShoot && bulletsLeft > 0)
@@ -94,32 +94,43 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Spike") || other.CompareTag("Enemy"))
-        {
-            lives--;
-        }
+        if (other == null || other.gameObject == null) return;
 
-        if (other.CompareTag("Scrumptious"))
-        {
-            hunger += 50;
-            other.gameObject.SetActive(false);
-            source.PlayOneShot(eatingSound);
-        }
+        string tag = other.tag;
 
-        if (other.CompareTag("Exit"))
+        switch (tag)
         {
-            SceneManager.LoadScene("Level2");
-        }
-        if (other.CompareTag("Slingshot"))
-        {
-            hasSlingShot = true;
-            transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
-            other.gameObject.SetActive(false);
+            case "Spike":
+                Die();
+                break;
+
+            case "Enemy":
+                lives--;
+                break;
+
+            case "Scrumptious":
+                hunger += 50;
+                other.gameObject.SetActive(false);
+                source.PlayOneShot(eatingSound);
+                break;
+
+            case "Exit":
+                SceneManager.LoadScene("Level2");
+                break;
+
+            case "Slingshot":
+                hasSlingShot = true;
+                transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+                other.gameObject.SetActive(false);
+                break;
+
+            default:
+                break;
         }
 
     }
 
-    void die()
+    void Die()
     {
         lives = 3;
         transform.position = respawnPoint.position;
