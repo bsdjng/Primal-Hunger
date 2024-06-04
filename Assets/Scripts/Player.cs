@@ -14,10 +14,10 @@ public class Player : MonoBehaviour
     private float hunger;
     public float maxHunger = 100;
     public float hungerMarkiplier = 1.5f;
-    private bool hasSlingShot;
-    private bool canShoot;
+    public bool hasSlingShot;
+    public bool canShoot;
     public int bulletsLeft;
-    private float slingForce = 10;
+    public float slingForce = 10;
     private float slingCooldown = 1;
     public GameObject bullet;
     public TMP_Text hungerText;
