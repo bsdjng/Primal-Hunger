@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -43,10 +42,14 @@ public class Player : MonoBehaviour
         {
             Die();
         }
+
         hunger -= Time.deltaTime * hungerMarkiplier;
-        hungerText.text = Mathf.RoundToInt(hunger).ToString() + "%";
+
+        //manage text
+        hungerText.text = "Food: " + Mathf.RoundToInt(hunger).ToString() + "%";
         livesText.text = "Lives: " + lives;
 
+        //manage sounds
         if (hunger < 20 && !hungerSoundPlayed)
         {
             source.PlayOneShot(hungerSound);
@@ -62,6 +65,7 @@ public class Player : MonoBehaviour
             Die();
         }
 
+        //shooting logic
         if (Input.GetMouseButtonDown(0) && hasSlingShot && canShoot && bulletsLeft > 0)
         {
             canShoot = false;
@@ -133,6 +137,7 @@ public class Player : MonoBehaviour
 
     void Die()
     {
+        //reset everything upon death
         lives = 3;
         transform.position = respawnPoint.position;
         rb.velocity = Vector2.zero;
@@ -153,6 +158,7 @@ public class Player : MonoBehaviour
 
     public void LoadNextScene()
     {
+        // loads next level
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
 

@@ -8,7 +8,7 @@ public class Boar : MonoBehaviour
 {
     public bool isFlipped;
     public GameObject bloodPar;
-    public SpriteRenderer renderer;
+    private SpriteRenderer renderer;
     public int startingHealth = 2;
     public int health;
     public float speed = 1f;

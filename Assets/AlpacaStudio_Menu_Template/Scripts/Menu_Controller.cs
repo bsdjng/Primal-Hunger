@@ -18,8 +18,6 @@ public class Menu_Controller : MonoBehaviour
 	[Tooltip("_audioSource defines the Audio Source component in this scene.")]
 	public AudioSource _audioSource;
 
-	//The private variable 'scene' defined below is used for example/development purposes.
-	//It is used in correlation with the Escape_Menu script to return to last scene on key press.
 	UnityEngine.SceneManagement.Scene scene;
 
 	void Awake()
@@ -31,18 +29,10 @@ public class Menu_Controller : MonoBehaviour
 
 		scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
 		PlayerPrefs.SetString("_LastScene", scene.name.ToString());
-		//Debug.Log(scene.name);
-	}
-
-	public void OpenWebpage()
-	{
-		_audioSource.PlayOneShot(_audioClip);
-		Application.OpenURL(_webpageURL);
 	}
 
 	public void PlayGame()
 	{
-		print("yo");
 		_audioSource.PlayOneShot(_audioClip);
 		PlayerPrefs.SetString("_LastScene", scene.name);
 		UnityEngine.SceneManagement.SceneManager.LoadScene(_sceneToLoadOnPlay);
