@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,6 +10,7 @@ public class Player : MonoBehaviour
 {
     public Rigidbody2D rb => GetComponent<Rigidbody2D>();
     public Transform respawnPoint;
+    public int lives;
     public float hunger;
     public float maxHunger = 100;
     public float hungerMarkiplier = 1.5f;
@@ -19,11 +21,13 @@ public class Player : MonoBehaviour
     public float slingCooldown = 1;
     public GameObject bullet;
     public TMP_Text hungerText;
+    public TMP_Text livesText;
     public bool hungerSoundPlayed;
     public AudioSource source => GetComponent<AudioSource>();
     public AudioClip hungerSound;
     public AudioClip eatingSound;
     public Animator anim;
+    public GameObject variablesParents;
 
     // Update is called once per frame
     void Update()
@@ -41,6 +45,7 @@ public class Player : MonoBehaviour
         }
         hunger -= Time.deltaTime * hungerMarkiplier;
         hungerText.text = Mathf.RoundToInt(hunger).ToString() + "%";
+        livesText.text = "Lives: " + lives;
 
         if (hunger < 20 && !hungerSoundPlayed)
         {
@@ -50,6 +55,11 @@ public class Player : MonoBehaviour
         if (hunger > 20)
         {
             hungerSoundPlayed = false;
+        }
+
+        if (lives <= 0)
+        {
+            die();
         }
 
         if (Input.GetMouseButtonDown(0) && hasSlingShot && canShoot && bulletsLeft > 0)
@@ -86,7 +96,7 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Spike") || other.CompareTag("Enemy"))
         {
-            die();
+            lives--;
         }
 
         if (other.CompareTag("Scrumptious"))
@@ -111,8 +121,21 @@ public class Player : MonoBehaviour
 
     void die()
     {
+        lives = 3;
         transform.position = respawnPoint.position;
         rb.velocity = Vector2.zero;
         hunger = 50;
+
+        for (int i = 0; i < variablesParents.transform.childCount; i++)
+        {
+            for (int j = 0; j < variablesParents.transform.GetChild(i).childCount; j++)
+            {
+                variablesParents.transform.GetChild(i).GetChild(j).gameObject.SetActive(false);
+                variablesParents.transform.GetChild(i).GetChild(j).gameObject.SetActive(true);
+
+            }
+        }
+        hasSlingShot = false;
+        transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
     }
 }

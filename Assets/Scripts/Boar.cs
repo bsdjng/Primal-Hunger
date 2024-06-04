@@ -9,7 +9,8 @@ public class Boar : MonoBehaviour
     public bool isFlipped;
     public GameObject bloodPar;
     public SpriteRenderer renderer;
-    public int health = 2;
+    public int startingHealth = 2;
+    public int health;
     public float speed = 1f;
 
     void Start()
@@ -49,7 +50,12 @@ public class Boar : MonoBehaviour
         GameObject mypar = Instantiate(bloodPar, transform);
         Destroy(mypar, 3);
         mypar.transform.SetParent(null);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        health = startingHealth;
     }
 
 }
